@@ -136,3 +136,33 @@ void DO_IO_Device_NSYS5() {
     //the scheduler is called
     scheduler();
 }
+
+void NSYS6_Get_CPU_Time(){
+    currentProcess->p_time = currentProcess->p_time + (CURRENT_TOD - insertTime);
+    exceptState->reg_v0 = currentProcess->p_time;
+    //return currentProcess->p_time
+    STCK(insertTime);
+    LDST(exceptState);
+}
+
+void NSYS7_Wait_For_Clock(){
+    sbCount++;
+    NSYS3_Passern(&(dSemaphores[MAXSEM-1]));
+}
+
+void NSYS8_Get_SUPPORT_Data(){
+    exceptState->reg_v0 = (unsigned int) currentProcess->p_supportStruct
+    //return currentProcess->p_supportStruct
+    LDST(exceptState);
+}
+
+void NSYS9_Get_Process_ID(){
+    if(currentProcess->p_prnt == 0){
+        exceptState->reg_v0 = currentProcess->pid;
+        //return currentProcess->pid;
+    }
+    else{
+        exceptState->reg_v0 = currentProcess->p_prnt->pid
+        //return currentProcess->p_prnt->pid;
+    }
+}
